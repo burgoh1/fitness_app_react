@@ -2,57 +2,14 @@
   box-sizing: border-box;
 }
 
+html,
 body {
-  width: 100%; /* Takes up full width on small screens */
-  max-width: 1200px; /* Keeps it from getting wider than 1200px */
-  margin-left: auto; /* Centers the container horizontally */
+  background: #1f1f1e;
+}
+
+body {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
   margin-right: auto;
-
-  /* Optional: Adds a little breathing room on the edges for mobile devices */
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.container {
-  margin: 1rem;
-  text-align: center;
-}
-
-.nav {
-  background-color: #333;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 2rem;
-  padding: 0 1rem;
-}
-
-.site-title {
-  font-size: 2rem;
-}
-
-.nav ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
-
-.nav a {
-  color: inherit;
-  text-decoration: none;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0.25rem;
-}
-
-.nav li.active {
-  background-color: #555;
-}
-
-.nav li:hover {
-  background-color: #777;
 }
