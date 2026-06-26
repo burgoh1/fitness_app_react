@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import './Nutrition.css';
+import DailyGoals from '../components/Nutrition/DailyGoals';
+import AddMealButton from '../components/Nutrition/AddMealButton';
+import MealForm from '../components/Nutrition/MealForm';
+import CurrentFoodList from '../components/Nutrition/CurrentFoodList';
+import MealList from '../components/Nutrition/MealList';
 
 const DEFAULT_GOALS = {
   calories: 3000,
@@ -12,7 +17,7 @@ export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [meals, setMeals] = useState([]);
-  // const [foods, setFoods] = useState([]);
+  const [foods, setFoods] = useState([]);
   const [goals] = useState(DEFAULT_GOALS);
 
   const totals = meals.reduce(
@@ -28,13 +33,6 @@ export default function Nutrition() {
   const proteinsLeft = Math.max(goals.protein - totals.protein, 0);
   const proteinsPct = Math.min((totals.protein / goals.protein) * 100, 100);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    setMeals((prev) => [...prev, { ...form, id: Date.now() }]);
-    setForm(EMPTY_FORM);
-    setShowForm(true);
-  }
-
   function handleCancel() {
     setForm(EMPTY_FORM);
     setShowForm(false);
@@ -48,88 +46,60 @@ export default function Nutrition() {
     setMeals((prev) => prev.filter((meal) => meal.id !== id));
   }
 
-  function handleAddFood() {
+  function handleAddFood(e) {
+    e.preventDefault();
+    setFoods((prev) => [...prev, { ...form, id: Date.now() }]);
     setForm(EMPTY_FORM);
-    setMeals((prev) => [...prev, { ...form, id: Date.now() }]);
+  }
+
+  function handleSubmitMeal() {
+    setMeals((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        foods: foods,
+      },
+    ]);
+    setFoods([]);
+    setForm(EMPTY_FORM);
+    setShowForm(false);
   }
 
   return (
     <div className="nutrition-page">
-      <section className="nutrition-card">
-        <h2>Daily Goals</h2>
-
-        <h3 className="goal-label-text">Calories</h3>
-        <div className="progress-bar-track">
-          <div
-            className="progress-bar-fill calories"
-            style={{ width: `${caloriesPct}%` }}
-          />
-        </div>
-        <div className="goal-labels">
-          <span className="goal-stat">
-            <strong>{totals.calories} cal</strong> / {goals.calories}
-          </span>
-          <span className="goal-remaining">{caloriesLeft} left</span>
-        </div>
-
-        <h3 className="goal-label-text protein">Protein</h3>
-        <div className="progress-bar-track">
-          <div
-            className="progress-bar-fill protein"
-            style={{ width: `${proteinsPct}%` }}
-          />
-        </div>
-        <div className="goal-labels">
-          <span className="goal-stat">
-            <strong>{totals.protein} g</strong> / {goals.protein}
-          </span>
-          <span className="goal-remaining">{proteinsLeft} left</span>
-        </div>
-      </section>
-
-      <button className="add-meal-btn" onClick={() => setShowForm(true)}>
-        + Add Meal
-      </button>
-
+      <DailyGoals
+        totals={totals}
+        goals={goals}
+        caloriesLeft={caloriesLeft}
+        caloriesPct={caloriesPct}
+        proteinsLeft={proteinsLeft}
+        proteinsPct={proteinsPct}
+      />
+      <AddMealButton
+        onClick={() => {
+          setShowForm(true);
+          setFoods([]);
+          setForm(EMPTY_FORM);
+        }}
+      />
       {showForm && (
         <div className="form-overlay">
           <div className="meal-popup">
-            <form className="meal-form" onSubmit={handleSubmit}>
-              <label style={{ color: 'white' }}>Food:</label>
-              <input type="text" name="name" onChange={handleFormChange} />
-              <label style={{ color: 'white' }}>Calories:</label>
-              <input type="text" name="calories" onChange={handleFormChange} />
-              <label style={{ color: 'white' }}>Protein:</label>
-              <input type="text" name="protein" onChange={handleFormChange} />
-              <button type="button" onClick={handleCancel}>
-                Cancel
-              </button>
-              <button type="buttom" onClick={handleAddFood}>
-                Add Food
-              </button>
-              <button type="submit">Submit Meal</button>
-            </form>
-            <section className="meal-display-form">
-              {meals.length > 0 && (
-                <ul>
-                  {meals.map((meal) => (
-                    <li key={meal.id}>
-                      <span>{meal.name}</span>
-                      <span>{meal.calories} cal / </span>
-                      <span>{meal.protein}g protein</span>
-                      <button onClick={() => handleDelete(meal.id)}>
-                        Delete
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            <MealForm
+              handleAddFood={handleAddFood}
+              form={form}
+              handleFormChange={handleFormChange}
+              handleCancel={handleCancel}
+            />
+            <CurrentFoodList
+              foods={foods}
+              handleDelete={handleDelete}
+              handleSubmitMeal={handleSubmitMeal}
+            />
           </div>
         </div>
       )}
-
-      <h1 className="nutrition-title">Meal Log</h1>
+      <MealList meals={meals} handleDelete={handleDelete} />
     </div>
   );
 }

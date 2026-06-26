@@ -11,7 +11,6 @@
 }
 
 .nutrition-title {
-  margin: 0 0 0 1.5rem;
   font-size: 2.5rem;
   color: #ffffff;
 }
@@ -132,4 +131,12 @@
   background: #1e1e1e;
   padding: 1.5rem;
   border-radius: 0 0 12px 12px;
+}
+
+.meal-form label {
+  color: white;
+}
+
+span {
+  color: white;
 }
